@@ -1,0 +1,12 @@
+[package]
+name = "markdown_parser"
+version = "0.1.0"
+edition = "2024"
+description = "Markdown parser - university project."
+
+[dependencies]
+anyhow = "1.0.100"
+clap = "4.5.51"
+pest = "2.8.3"
+pest_derive = "2.8.3"
+thiserror = "2.0.17"
