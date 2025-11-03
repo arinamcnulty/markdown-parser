@@ -1,1 +1,114 @@
-grammar = { "Hello World!" }
+//
+// Markdown parser grammar
+// Author: Zudilova Oryna
+//
+
+// Single character and whitespace handling
+character = { ANY }
+whitespace = _{ " " | "\t" }
+
+// Links and images - core inline elements
+// Example: [Click here](https://example.com)
+// Example: ![Alt text](image.jpg)
+link = { "[" ~ link_content ~ "](" ~ link_url ~ ")" }
+image = { "![" ~ image_alt ~ "](" ~ image_url ~ ")" }
+
+// Link and image content parsing
+link_content = { link_char+ }
+image_alt = { image_char+ }
+link_url = { url_char+ }
+image_url = { url_char+ }
+
+// Characters allowed in different contexts
+link_char = { !("]" | "\\") ~ ANY | escape_sequence }
+image_char = { !("]" | "\\") ~ ANY | escape_sequence }
+url_char = { !(")" | "\\") ~ ANY | escape_sequence }
+
+// Text formatting - bold, italic, etc.
+// Example: **bold text**, *italic text*, ~~strikethrough~~
+bold_formatting = { "**" ~ formatting_content+ ~ "**" }
+italic_formatting = { ("*" ~ formatting_content+ ~ "*") | ("_" ~ formatting_content+ ~ "_") }
+strikethrough_formatting = { "~~" ~ formatting_content+ ~ "~~" }
+underline_formatting = { "__" ~ formatting_content+ ~ "__" }
+
+// Content that can appear inside formatting
+formatting_content = _{ plain_char+ | escape_sequence }
+
+// Escape sequences for special characters
+// Example: \* for literal asterisk
+escape_sequence = { "\\" ~ (!whitespace ~ character) }
+
+// Plain text characters (no formatting markers)
+plain_char = { !("*" | "_" | "~" | "[" | "!" | "\\" | NEWLINE) ~ ANY }
+
+// Headings with different levels
+// Example: # Heading 1, ## Heading 2, ### Heading 3
+document_heading = _{
+    h1_heading
+  | h2_heading
+  | h3_heading
+}
+
+h1_heading = { "#" ~ whitespace ~ heading_text ~ NEWLINE? }
+h2_heading = { "##" ~ whitespace ~ heading_text ~ NEWLINE? }
+h3_heading = { "###" ~ whitespace ~ heading_text ~ NEWLINE? }
+heading_text = { (!NEWLINE ~ ANY)+ }
+
+// Blockquotes with optional line prefixes
+// Example:
+// > This is a quote
+// > Second line
+document_quote = { quote_line+ }
+quote_line = { ">" ~ whitespace? ~ (paragraph_text | blank_line) }
+
+// Code blocks with language support
+// Example:
+// ```rust
+// println!("Hello");
+// ```
+code_fence = { "```" ~ (language_spec ~ whitespace* ~ NEWLINE)? ~ code_body ~ NEWLINE? ~ "```" ~ NEWLINE? }
+language_spec = { whitespace* ~ ('a'..'z' | 'A'..'Z')+ }
+code_body = { (!(NEWLINE? ~ "```") ~ ANY)+ }
+
+// Horizontal rules (thematic breaks)
+// Example: ---, ***, ___
+thematic_break = { (("-" ~ "-"+) | ("*" ~ "*"+) | ("_" ~ "_"+)) ~ whitespace* ~ (NEWLINE | EOI) }
+
+// Paragraphs - basic text blocks
+document_paragraph = { paragraph_text+ }
+paragraph_text = { inline_content+ ~ line_break? }
+line_break = _{ NEWLINE }
+
+// Blank lines for separation
+blank_line = { NEWLINE }
+
+// All possible inline elements in text
+inline_content = _{
+    plain_text
+  | escape_sequence
+  | text_formatting
+}
+
+text_formatting = _{
+    bold_formatting
+  | italic_formatting
+  | strikethrough_formatting
+  | underline_formatting
+  | image
+  | link
+}
+
+// Plain text spans
+plain_text = @{ plain_char+ }
+
+// Main document structure
+document_structure = { SOI ~ (document_block ~ blank_line*)* ~ EOI }
+
+// All possible document blocks
+document_block = _{
+    document_heading
+  | document_quote
+  | code_fence
+  | thematic_break
+  | document_paragraph
+}
