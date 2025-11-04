@@ -54,7 +54,7 @@ fn check_header(rule: Rule, header_string: &str) {
 
             let inner_pairs = pair.into_inner();
             let header_text: Vec<&str> = inner_pairs
-                .filter(|pair| pair.as_rule() == Rule::heading_text)
+                .filter(|pair| pair.as_rule() == Rule::document_heading)
                 .map(|pair| pair.as_str())
                 .collect();
 

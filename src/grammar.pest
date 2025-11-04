@@ -4,7 +4,7 @@
 //
 
 // Single character and whitespace handling
-character = { ANY }
+character = { !NEWLINE ~ ANY } // Any character except newline
 whitespace = _{ " " | "\t" }
 
 // Links and images - core inline elements
@@ -41,8 +41,24 @@ underline_content = { (!( "__" ) ~ ANY)* }
 // Example: \* for literal asterisk
 escape_sequence = { "\\" ~ (!whitespace ~ character) }
 
+// Inline code with backticks
+inline_code = { "`" ~ (!"`" ~ ANY)* ~ "`" }
+
+// Lists
+// Unordered lists: - item or * item
+// Ordered lists: 1. item, 2. item, etc.
+unordered_list_item = { ("-" | "*") ~ whitespace ~ (!NEWLINE ~ ANY)* ~ NEWLINE? }
+ordered_list_item = { ASCII_DIGIT+ ~ "." ~ whitespace ~ (!NEWLINE ~ ANY)* ~ NEWLINE? }
+
+// Document lists
+document_unordered_list = { unordered_list_item+ }
+document_ordered_list = { ordered_list_item+ }
+
+// Thematic break (horizontal rule)
+thematic_break = { "---" ~ whitespace* ~ NEWLINE? }
+
 // Plain text characters (no formatting markers)
-plain_char = { !("*" | "_" | "~" | "[" | "\\" | NEWLINE) ~ ANY }
+plain_char = { !("*" | "_" | "~" | "[" | "!" | "\\" | "#" | "`" | "-" | ASCII_DIGIT | NEWLINE) ~ ANY }
 
 // Headings with different levels
 // Example: # Heading 1, ## Heading 2, ### Heading 3
@@ -52,10 +68,9 @@ document_heading = _{
   | h3_heading
 }
 
-h1_heading = { "#" ~ whitespace ~ heading_text ~ NEWLINE? }
-h2_heading = { "##" ~ whitespace ~ heading_text ~ NEWLINE? }
-h3_heading = { "###" ~ whitespace ~ heading_text ~ NEWLINE? }
-heading_text = { (!NEWLINE ~ ANY)+ }
+h1_heading = { "#" ~ whitespace ~ (!NEWLINE ~ ANY)* ~ NEWLINE? }
+h2_heading = { "##" ~ whitespace ~ (!NEWLINE ~ ANY)* ~ NEWLINE? }
+h3_heading = { "###" ~ whitespace ~ (!NEWLINE ~ ANY)* ~ NEWLINE? }
 
 // Blockquotes with optional line prefixes
 // Example:
@@ -75,7 +90,6 @@ code_body = { (!(NEWLINE? ~ "```") ~ ANY)+ }
 
 // Horizontal rules (thematic breaks)
 // Example: ---, ***, ___
-thematic_break = { (("-" ~ "-"+) | ("*" ~ "*"+) | ("_" ~ "_"+)) ~ whitespace* ~ (NEWLINE | EOI) }
 
 // Paragraphs - basic text blocks
 document_paragraph = { paragraph_text+ }
@@ -87,9 +101,12 @@ blank_line = { NEWLINE }
 
 // All possible inline elements in text
 inline_content = _{
-    plain_text
-  | escape_sequence
+    image
+  | link
   | text_formatting
+  | inline_code
+  | escape_sequence
+  | plain_text
 }
 
 text_formatting = _{
@@ -105,13 +122,15 @@ text_formatting = _{
 plain_text = @{ plain_char+ }
 
 // Main document structure
-document_structure = { SOI ~ (document_block ~ blank_line*)* ~ EOI }
+document_structure = { SOI ~ (document_block ~ NEWLINE*)* ~ document_block? ~ EOI? }
 
 // All possible document blocks
-document_block = _{
+document_block = {
     document_heading
   | document_quote
   | code_fence
+  | document_unordered_list
+  | document_ordered_list
   | thematic_break
   | document_paragraph
 }
