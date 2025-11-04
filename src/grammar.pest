@@ -26,20 +26,23 @@ url_char = { !(")" | "\\") ~ ANY | escape_sequence }
 
 // Text formatting - bold, italic, etc.
 // Example: **bold text**, *italic text*, ~~strikethrough~~
-bold_formatting = { "**" ~ formatting_content+ ~ "**" }
-italic_formatting = { ("*" ~ formatting_content+ ~ "*") | ("_" ~ formatting_content+ ~ "_") }
-strikethrough_formatting = { "~~" ~ formatting_content+ ~ "~~" }
-underline_formatting = { "__" ~ formatting_content+ ~ "__" }
+bold_formatting = { "**" ~ bold_content ~ "**" }
+italic_formatting = { ("*" ~ italic_content ~ "*") | ("_" ~ italic_content ~ "_") }
+strikethrough_formatting = { "~~" ~ strikethrough_content ~ "~~" }
+underline_formatting = { "__" ~ underline_content ~ "__" }
 
-// Content that can appear inside formatting
-formatting_content = _{ plain_char+ | escape_sequence }
+// Content rules for each formatting type (consume until closing delimiter)
+bold_content = { (!( "**" ) ~ ANY)* }
+italic_content = { (!( "*" | "_" ) ~ ANY)* }
+strikethrough_content = { (!( "~~" ) ~ ANY)* }
+underline_content = { (!( "__" ) ~ ANY)* }
 
 // Escape sequences for special characters
 // Example: \* for literal asterisk
 escape_sequence = { "\\" ~ (!whitespace ~ character) }
 
 // Plain text characters (no formatting markers)
-plain_char = { !("*" | "_" | "~" | "[" | "!" | "\\" | NEWLINE) ~ ANY }
+plain_char = { !("*" | "_" | "~" | "[" | "\\" | NEWLINE) ~ ANY }
 
 // Headings with different levels
 // Example: # Heading 1, ## Heading 2, ### Heading 3
