@@ -55,7 +55,7 @@ document_unordered_list = { unordered_list_item+ }
 document_ordered_list = { ordered_list_item+ }
 
 // Thematic break (horizontal rule)
-thematic_break = { "---" ~ whitespace* ~ NEWLINE? }
+thematic_break = { ("---" | "***" | "___") ~ whitespace* ~ (NEWLINE | EOI) }
 
 // Plain text characters (no formatting markers)
 plain_char = { !("*" | "_" | "~" | "[" | "!" | "\\" | "#" | "`" | "-" | ASCII_DIGIT | NEWLINE) ~ ANY }

@@ -27,8 +27,8 @@ use std::{
 };
 
 use pest::{
-    iterators::{Pair, Pairs},
     Parser,
+    iterators::{Pair, Pairs},
 };
 use pest_derive::Parser;
 
@@ -59,7 +59,6 @@ pub fn parse_markdown(input: &str) -> Result<Pairs<'_, Rule>, MarkdownError> {
     MarkdownParser::parse(Rule::document_structure, input)
         .map_err(|e| MarkdownError::ParseError(e.to_string()))
 }
-
 
 /// Convert markdown string to vector of HTML strings.
 /// Each element represents one HTML line/tag.
@@ -141,7 +140,10 @@ fn process_heading(pair: Pair<Rule>) -> Result<String, MarkdownError> {
         .trim_end_matches('\n')
         .trim();
 
-    Ok(format!("<h{level}>{}</h{level}>", html_escape::encode_text(text)))
+    Ok(format!(
+        "<h{level}>{}</h{level}>",
+        html_escape::encode_text(text)
+    ))
 }
 
 fn process_document_paragraph(pair: Pair<Rule>) -> Result<String, MarkdownError> {
@@ -175,7 +177,10 @@ fn process_inline_element(pair: Pair<Rule>) -> Result<String, MarkdownError> {
         Rule::plain_text => Ok(html_escape::encode_text(pair.as_str()).to_string()),
         Rule::inline_code => {
             let full = pair.as_str();
-            let code = full.strip_prefix('`').and_then(|s| s.strip_suffix('`')).unwrap_or("");
+            let code = full
+                .strip_prefix('`')
+                .and_then(|s| s.strip_suffix('`'))
+                .unwrap_or("");
             Ok(format!("<code>{}</code>", html_escape::encode_text(code)))
         }
         Rule::link => process_link(pair),
@@ -325,19 +330,15 @@ fn process_code_fence(pair: Pair<Rule>) -> Result<String, MarkdownError> {
 }
 
 fn process_unordered_list(pair: Pair<Rule>) -> Result<String, MarkdownError> {
-    let items: Result<Vec<String>, MarkdownError> = pair
-        .into_inner()
-        .map(process_list_item)
-        .collect();
+    let items: Result<Vec<String>, MarkdownError> =
+        pair.into_inner().map(process_list_item).collect();
 
     Ok(format!("<ul>\n{}\n</ul>", items?.join("\n")))
 }
 
 fn process_ordered_list(pair: Pair<Rule>) -> Result<String, MarkdownError> {
-    let items: Result<Vec<String>, MarkdownError> = pair
-        .into_inner()
-        .map(process_list_item)
-        .collect();
+    let items: Result<Vec<String>, MarkdownError> =
+        pair.into_inner().map(process_list_item).collect();
 
     Ok(format!("<ol>\n{}\n</ol>", items?.join("\n")))
 }
@@ -356,10 +357,7 @@ fn process_list_item(pair: Pair<Rule>) -> Result<String, MarkdownError> {
 
 fn process_code_block(pair: Pair<Rule>) -> Result<String, MarkdownError> {
     let mut inner = pair.into_inner();
-    let language = inner
-        .next()
-        .map(|p| p.as_str().trim())
-        .unwrap_or("");
+    let language = inner.next().map(|p| p.as_str().trim()).unwrap_or("");
     let code = inner
         .next()
         .map(|p| html_escape::encode_text(p.as_str()).to_string())
@@ -375,11 +373,7 @@ fn process_code_block(pair: Pair<Rule>) -> Result<String, MarkdownError> {
 }
 
 fn process_escape_sequence(pair: Pair<Rule>) -> Result<String, MarkdownError> {
-    let escaped = pair
-        .into_inner()
-        .next()
-        .map(|p| p.as_str())
-        .unwrap_or("");
+    let escaped = pair.into_inner().next().map(|p| p.as_str()).unwrap_or("");
     Ok(html_escape::encode_text(escaped).to_string())
 }
 

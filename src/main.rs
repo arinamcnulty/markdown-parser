@@ -1,5 +1,5 @@
 use clap::{Arg, ArgMatches, Command};
-use markdown_parser::{convert_file_to_html, print_html_to_console, MarkdownError};
+use markdown_parser::{MarkdownError, convert_file_to_html, print_html_to_console};
 use std::path::PathBuf;
 
 fn main() -> Result<(), MarkdownError> {
@@ -90,14 +90,14 @@ fn build_cli_app() -> Command {
 }
 
 fn handle_convert_command(matches: &ArgMatches) -> Result<(), MarkdownError> {
-    let input_path: &PathBuf = matches
-        .get_one("input")
-        .expect("Input path is required");
-    let output_path: &PathBuf = matches
-        .get_one("output")
-        .expect("Output path is required");
+    let input_path: &PathBuf = matches.get_one("input").expect("Input path is required");
+    let output_path: &PathBuf = matches.get_one("output").expect("Output path is required");
 
-    println!("🔄 Converting '{}' to '{}'...", input_path.display(), output_path.display());
+    println!(
+        "🔄 Converting '{}' to '{}'...",
+        input_path.display(),
+        output_path.display()
+    );
 
     match convert_file_to_html(input_path, output_path) {
         Ok(()) => {
@@ -124,7 +124,6 @@ fn handle_parse_command(matches: &ArgMatches) -> Result<(), MarkdownError> {
 
     print_html_to_console(&markdown_text)
 }
-
 
 fn handle_info_command() -> Result<(), MarkdownError> {
     println!("Markdown Parser v{}", env!("CARGO_PKG_VERSION"));
