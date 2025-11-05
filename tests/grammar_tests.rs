@@ -1,6 +1,6 @@
 use anyhow::anyhow;
-use markdown_parser::MarkdownParser;
-use markdown_parser::*;
+use arinamcnulty_markdown_parser::MarkdownParser;
+use arinamcnulty_markdown_parser::*;
 use pest::Parser;
 
 fn parse_by_rule(

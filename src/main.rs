@@ -1,5 +1,5 @@
+use arinamcnulty_markdown_parser::{MarkdownError, convert_file_to_html, print_html_to_console};
 use clap::{Arg, ArgMatches, Command};
-use markdown_parser::{MarkdownError, convert_file_to_html, print_html_to_console};
 use std::path::PathBuf;
 
 fn main() -> Result<(), MarkdownError> {

@@ -13,7 +13,7 @@
 //! ## Example
 //!
 //! ```rust
-//! use markdown_parser::{parse_markdown, str_to_html};
+//! use arinamcnulty_markdown_parser::{parse_markdown, str_to_html};
 //!
 //! let markdown = "# Hello World\n\nThis is **bold** text.";
 //! let html = str_to_html(markdown).unwrap();

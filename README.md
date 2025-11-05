@@ -7,7 +7,7 @@ A comprehensive Markdown to HTML converter built in Rust using Pest grammar. Thi
 ### From crates.io
 
 ```bash
-cargo install arinamcnulty_markdown_parser
+cargo install arinamcnulty-markdown-parser
 ```
 
 ### From Source

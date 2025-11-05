@@ -1,8 +1,9 @@
 [package]
-name = "markdown_parser"
+name = "arinamcnulty-markdown-parser"
 version = "0.1.0"
 edition = "2024"
 description = "Markdown parser - university project."
+license = "MIT"
 
 [dependencies]
 anyhow = "1.0.100"
