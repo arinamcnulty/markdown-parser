@@ -1,9 +1,12 @@
 [package]
 name = "arinamcnulty-markdown-parser"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 description = "Markdown parser - university project."
 license = "MIT"
+repository = "https://github.com/arinamcnulty/markdown-parser"
+documentation = "https://docs.rs/arinamcnulty-markdown-parser"
+homepage = "https://github.com/arinamcnulty/markdown-parser"
 
 [dependencies]
 anyhow = "1.0.100"

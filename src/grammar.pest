@@ -2,9 +2,14 @@
 // Markdown parser grammar
 // Author: Zudilova Oryna
 //
+// This grammar defines rules for parsing CommonMark Markdown syntax.
+// Each rule corresponds to a specific Markdown element and is documented below.
+//
 
 // Single character and whitespace handling
-character = { !NEWLINE ~ ANY } // Any character except newline
+/// Any single character except newline
+character = { !NEWLINE ~ ANY }
+/// Whitespace characters (space or tab)
 whitespace = _{ " " | "\t" }
 
 // Links and images - core inline elements

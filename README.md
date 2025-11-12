@@ -6,6 +6,8 @@ A comprehensive Markdown to HTML converter built in Rust using Pest grammar. Thi
 
 ### From crates.io
 
+The package is published on [crates.io](https://crates.io/crates/arinamcnulty-markdown-parser).
+
 ```bash
 cargo install arinamcnulty-markdown-parser
 ```
@@ -19,6 +21,8 @@ cargo build --release
 ```
 
 ## Usage
+
+You can read documentation on [docs.rs](https://docs.rs/arinamcnulty-markdown-parser)
 
 ### Command Line Interface
 

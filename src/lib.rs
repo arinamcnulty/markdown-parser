@@ -355,13 +355,23 @@ fn process_list_item(pair: Pair<Rule>) -> Result<String, MarkdownError> {
     Ok(format!("<li>{}</li>", html_escape::encode_text(text)))
 }
 
+/// Process fenced code blocks with optional language specification.
+/// Supports syntax like ```rust\ncode here\n```
 fn process_code_block(pair: Pair<Rule>) -> Result<String, MarkdownError> {
-    let mut inner = pair.into_inner();
-    let language = inner.next().map(|p| p.as_str().trim()).unwrap_or("");
-    let code = inner
-        .next()
-        .map(|p| html_escape::encode_text(p.as_str()).to_string())
-        .unwrap_or_default();
+    let mut language = String::new();
+    let mut code = String::new();
+
+    for inner_pair in pair.into_inner() {
+        match inner_pair.as_rule() {
+            Rule::language_spec => {
+                language = inner_pair.as_str().trim().to_string();
+            }
+            Rule::code_body => {
+                code = html_escape::encode_text(inner_pair.as_str()).to_string();
+            }
+            _ => {} // Skip other elements like whitespace, newlines, fences
+        }
+    }
 
     let lang_attr = if language.is_empty() {
         String::new()
