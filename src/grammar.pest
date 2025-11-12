@@ -63,19 +63,25 @@ document_ordered_list = { ordered_list_item+ }
 thematic_break = { ("---" | "***" | "___") ~ whitespace* ~ (NEWLINE | EOI) }
 
 // Plain text characters (no formatting markers)
-plain_char = { !("*" | "_" | "~" | "[" | "!" | "\\" | "#" | "`" | "-" | ASCII_DIGIT | NEWLINE) ~ ANY }
+plain_char = { !("*" | "_" | "~" | "[" | "!" | "\\" | "#" | "`" | ASCII_DIGIT | NEWLINE) ~ ANY }
 
 // Headings with different levels
-// Example: # Heading 1, ## Heading 2, ### Heading 3
+// Example: # Heading 1, ## Heading 2, ### Heading 3, #### Heading 4, ##### Heading 5, ###### Heading 6
 document_heading = _{
     h1_heading
   | h2_heading
   | h3_heading
+  | h4_heading
+  | h5_heading
+  | h6_heading
 }
 
 h1_heading = { "#" ~ whitespace ~ (!NEWLINE ~ ANY)* ~ NEWLINE? }
 h2_heading = { "##" ~ whitespace ~ (!NEWLINE ~ ANY)* ~ NEWLINE? }
 h3_heading = { "###" ~ whitespace ~ (!NEWLINE ~ ANY)* ~ NEWLINE? }
+h4_heading = { "####" ~ whitespace ~ (!NEWLINE ~ ANY)* ~ NEWLINE? }
+h5_heading = { "#####" ~ whitespace ~ (!NEWLINE ~ ANY)* ~ NEWLINE? }
+h6_heading = { "######" ~ whitespace ~ (!NEWLINE ~ ANY)* ~ NEWLINE? }
 
 // Blockquotes with optional line prefixes
 // Example:

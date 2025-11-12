@@ -98,7 +98,7 @@ fn convert_to_html(pair: Pair<Rule>) -> Result<String, MarkdownError> {
             convert_to_html(inner)
         }
         Rule::document_heading => process_document_heading(pair),
-        Rule::h1_heading | Rule::h2_heading | Rule::h3_heading => process_heading(pair),
+        Rule::h1_heading | Rule::h2_heading | Rule::h3_heading | Rule::h4_heading | Rule::h5_heading | Rule::h6_heading => process_heading(pair),
         Rule::document_paragraph => process_document_paragraph(pair),
         Rule::document_quote => process_document_quote(pair),
         Rule::quote_line => process_quote_line(pair),
@@ -124,12 +124,15 @@ fn process_document_heading(pair: Pair<Rule>) -> Result<String, MarkdownError> {
     process_heading(inner)
 }
 
-/// Process heading elements (H1, H2, H3).
+/// Process heading elements (H1, H2, H3, H4, H5, H6).
 fn process_heading(pair: Pair<Rule>) -> Result<String, MarkdownError> {
     let level = match pair.as_rule() {
         Rule::h1_heading => 1,
         Rule::h2_heading => 2,
         Rule::h3_heading => 3,
+        Rule::h4_heading => 4,
+        Rule::h5_heading => 5,
+        Rule::h6_heading => 6,
         _ => return Err(MarkdownError::ParseError("Invalid heading".to_string())),
     };
 

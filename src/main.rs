@@ -93,20 +93,13 @@ fn handle_convert_command(matches: &ArgMatches) -> Result<(), MarkdownError> {
     let input_path: &PathBuf = matches.get_one("input").expect("Input path is required");
     let output_path: &PathBuf = matches.get_one("output").expect("Output path is required");
 
-    println!(
-        "🔄 Converting '{}' to '{}'...",
-        input_path.display(),
-        output_path.display()
-    );
-
     match convert_file_to_html(input_path, output_path) {
         Ok(()) => {
-            println!("✅ Conversion completed successfully!");
-            println!("📄 HTML file saved to: {}", output_path.display());
+            println!("HTML file saved to: {}", output_path.display());
             Ok(())
         }
         Err(e) => {
-            eprintln!("❌ Conversion failed: {}", e);
+            eprintln!("Conversion failed: {}", e);
             Err(e)
         }
     }
